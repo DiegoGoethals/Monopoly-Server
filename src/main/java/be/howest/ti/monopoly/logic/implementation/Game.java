@@ -259,10 +259,10 @@ public class Game {
 
     public void changeCurrentPlayer() {
         currentPlayer++;
-        currentPlayer = currentPlayer % players.size();
+        currentPlayer %= players.size();
         while (bankruptPlayers.contains(players.get(currentPlayer))) {
             currentPlayer++;
-            currentPlayer = currentPlayer % players.size();
+            currentPlayer %= players.size();
         }
     }
 
@@ -273,6 +273,7 @@ public class Game {
                     winner = player.getName();
                 }
             }
+            canRoll = false;
             ended = true;
         }
     }
@@ -343,12 +344,7 @@ public class Game {
     }
 
     public Player findPlayerByName(String playerName) {
-        for (Player player : players) {
-            if (player.getName().equals(playerName)) {
-                return player;
-            }
-        }
-        return null;
+        return players.stream().filter(player -> player.getName().equals(playerName)).findFirst().orElse(null);
     }
 
     public void getOutOfJailFine(String playerName) {

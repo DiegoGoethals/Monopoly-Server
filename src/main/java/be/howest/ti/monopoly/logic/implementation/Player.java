@@ -64,7 +64,7 @@ public class Player {
             jailed = false;
             turnsInJail = 0;
             currentTile += roll;
-            currentTile = currentTile % 40;
+            currentTile %= 40;
         }
     }
 
