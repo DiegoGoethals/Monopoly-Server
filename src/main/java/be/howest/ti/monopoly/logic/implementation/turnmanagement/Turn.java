@@ -31,6 +31,9 @@ public class Turn {
         int currentTile = player.getCurrentTile();
         Tile location = tiles.get(currentTile);
         switch (currentTile) {
+            case 0:
+                moves.add(new Move(tiles.get(0), "Start"));
+                break;
             case 20:
                 moves.add(new Move(tiles.get(20), "Nothing special happened"));
                 break;
@@ -44,8 +47,10 @@ public class Turn {
                     moves.add(new Move(tiles.get(10), "Just visiting"));
                 }
                 break;
+          default:
+              break;
         }
-        if (lastPosition >= 28 && player.getCurrentTile() <= 11 && !player.isJailed()) {
+        if (lastPosition >= 28 && player.getCurrentTile() < 11 && !player.isJailed()) {
             player.addMoney(200);
         }
         if (location.getType().equals("Street") || location.getType().equals("Utility") ||
@@ -230,6 +235,6 @@ public class Turn {
     }
 
     public Move getLastMove() {
-        return moves.get(moves.size() - 1);
+      return moves.get(moves.size() - 1);
     }
 }
