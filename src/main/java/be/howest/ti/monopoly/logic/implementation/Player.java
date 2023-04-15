@@ -1,20 +1,19 @@
 package be.howest.ti.monopoly.logic.implementation;
 
 import be.howest.ti.monopoly.logic.implementation.tiles.Property;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Player {
 
-    private String name;
+    private final String name;
     private int currentTile;
     private boolean jailed;
     private int money;
     private boolean bankrupt;
     private int getOutOfJailFreeCards;
-    private String taxSystem;
     private List<Property> properties;
     private int turnsInJail;
     int totalWorth;
@@ -27,7 +26,6 @@ public class Player {
         money = 1500;
         bankrupt = false;
         getOutOfJailFreeCards = 0;
-        taxSystem = "ESTIMATE";
         properties = new ArrayList<>();
         turnsInJail = 0;
         totalWorth = 0;
@@ -35,23 +33,17 @@ public class Player {
     }
 
     public void takeMortgage(String propertyName) {
-        Property property = null;
-        for (Property p : properties) {
-            if (p.getName().equals(propertyName)) {
-                property = p;
-            }
-        }
+        Property property = findPropertyByName(propertyName);
         addMoney(property.getMortgage());
         property.takeMortgage();
     }
 
+    public Property findPropertyByName(String propertyName) {
+        return properties.stream().filter(p -> p.getName().equals(propertyName)).findFirst().orElse(null);
+    }
+
     public void settleMortgage(String propertyName) {
-        Property property = null;
-        for (Property p : properties) {
-            if (p.getName().equals(propertyName)) {
-                property = p;
-            }
-        }
+        Property property = findPropertyByName(propertyName);
         pay(property.getMortgage());
         property.settleMortgage();
     }
@@ -136,12 +128,7 @@ public class Player {
     }
 
     public List<Property> getAutoshopProperties() {
-        List<Property> autoshops = new ArrayList<>();
-        for (Property property : properties) {
-            if (property.getType().equals("Autoshop")) {
-                autoshops.add(property);
-            }
-        }
-        return autoshops;
+      return properties.stream().filter(p -> p.getType().equals("Autoshop"))
+        .collect(Collectors.toList());
     }
 }

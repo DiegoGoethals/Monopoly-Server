@@ -11,9 +11,9 @@ import java.util.Random;
 
 public class Turn {
 
-    private int [] roll;
-    private Player player;
-    private String type;
+    private final int [] roll;
+    private final Player player;
+    private final String type;
     private ArrayList<Move> moves;
 
     public Turn(Player player, int[] roll) {
