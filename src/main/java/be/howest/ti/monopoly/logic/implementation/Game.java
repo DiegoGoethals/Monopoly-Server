@@ -123,8 +123,21 @@ public class Game {
                     payRent((Property) tiles.get(lastPosition), players.get(currentPlayer));
                     checkDoubleRoll(roll);
                     break;
+                  case "Has to pay double rent":
+                    payRent((Property) tiles.get(lastPosition), players.get(currentPlayer));
+                    payRent((Property) tiles.get(lastPosition), players.get(currentPlayer));
+                    checkDoubleRoll(roll);
+                    break;
                   case "has to pay taxes":
                     players.get(currentPlayer).pay(taxAmount);
+                    if (players.get(currentPlayer).getMoney() < 0) {
+                        players.get(currentPlayer).goBankrupt();
+                        for (Property property : players.get(currentPlayer).getProperties()) {
+                            property.setOwner(null);
+                        }
+                        bankruptPlayers.add(players.get(currentPlayer));
+                        checkWinner();
+                    }
                     checkDoubleRoll(roll);
                     break;
                   default:
@@ -139,6 +152,7 @@ public class Game {
     private void bankruptcy(Property property, Player player, int rent) {
         if (player.getMoney() < rent) {
             goBankruptByDebt(property.getOwner());
+            checkWinner();
         }
     }
 
@@ -239,6 +253,8 @@ public class Game {
         }
         player.getProperties().clear();
         player.goBankrupt();
+        bankruptPlayers.add(player);
+        checkWinner();
     }
 
     public void checkDoubleRoll(int[] roll) {
@@ -268,13 +284,9 @@ public class Game {
 
     public void checkWinner() {
         if (bankruptPlayers.size() == players.size() - 1) {
-            for (Player player : players) {
-                if (!bankruptPlayers.contains(player)) {
-                    winner = player.getName();
-                }
-            }
-            canRoll = false;
-            ended = true;
+          winner = players.stream().filter(player -> !bankruptPlayers.contains(player)).findFirst().get().getName();
+          canRoll = false;
+          ended = true;
         }
     }
 

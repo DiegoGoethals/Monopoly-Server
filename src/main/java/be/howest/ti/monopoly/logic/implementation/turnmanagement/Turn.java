@@ -4,6 +4,7 @@ import be.howest.ti.monopoly.logic.implementation.Game;
 import be.howest.ti.monopoly.logic.implementation.Player;
 import be.howest.ti.monopoly.logic.implementation.tiles.Property;
 import be.howest.ti.monopoly.logic.implementation.tiles.Tile;
+import com.fasterxml.jackson.databind.annotation.JsonAppend;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,7 +112,12 @@ public class Turn {
                         player.setCurrentTile(5);
                         player.addMoney(200);
                     }
-                    // Implement buyProperty or pay double rent here
+                    Property shop = (Property) tiles.get(player.getCurrentTile());
+                    if (shop.isOwned()) {
+                      moves.add(new Move(shop, "has to pay double rent"));
+                    } else {
+                      moves.add(new Move(shop, "can buy this property in direct sale"));
+                    }
                     break;
                 case "Advance to the nearest Utility. If unowned, you may buy it from the Bank. If owned, throw dice and pay ten times the amount thrown.":
                     if (player.getCurrentTile() == 7) {
@@ -122,7 +128,12 @@ public class Turn {
                         player.setCurrentTile(12);
                         player.addMoney(200);
                     }
-                    // Implement buyProperty or pay double rent here
+                    Property utility = (Property) tiles.get(player.getCurrentTile());
+                    if (utility.isOwned()) {
+                        moves.add(new Move(utility, "has to pay double rent"));
+                    } else {
+                        moves.add(new Move(utility, "can buy this property in direct sale"));
+                    }
                     break;
                 case "Bank pays you dividend of $50.":
                     player.addMoney(50);
