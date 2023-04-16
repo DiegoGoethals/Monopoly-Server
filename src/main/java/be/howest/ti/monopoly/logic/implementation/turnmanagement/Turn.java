@@ -4,6 +4,7 @@ import be.howest.ti.monopoly.logic.implementation.Game;
 import be.howest.ti.monopoly.logic.implementation.Player;
 import be.howest.ti.monopoly.logic.implementation.tiles.Property;
 import be.howest.ti.monopoly.logic.implementation.tiles.Tile;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonAppend;
 
 import java.util.ArrayList;
@@ -245,6 +246,7 @@ public class Turn {
         return moves;
     }
 
+    @JsonIgnore
     public Move getLastMove() {
       return moves.get(moves.size() - 1);
     }

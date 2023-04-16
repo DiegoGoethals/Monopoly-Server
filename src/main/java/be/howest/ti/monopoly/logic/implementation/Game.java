@@ -1,6 +1,7 @@
 package be.howest.ti.monopoly.logic.implementation;
 
 import be.howest.ti.monopoly.logic.implementation.tiles.Property;
+import be.howest.ti.monopoly.logic.implementation.tiles.Street;
 import be.howest.ti.monopoly.logic.implementation.tiles.Tile;
 import be.howest.ti.monopoly.logic.implementation.turnmanagement.BuyStatus;
 import be.howest.ti.monopoly.logic.implementation.turnmanagement.Move;
@@ -23,7 +24,7 @@ public class Game {
     private int amountOfDoubleRolls;
     private ArrayList<Player> bankruptPlayers;
     private final int jailFine;
-    private int taxAmount;
+    private final int taxAmount;
     private final List<Tile> tiles;
 
     public Game(String prefix, int numberOfPlayers, List<Tile> tiles) {
@@ -120,22 +121,23 @@ public class Game {
                     canRoll = false;
                     break;
                   case "Has to pay rent":
-                    payRent((Property) tiles.get(lastPosition), players.get(currentPlayer));
+                    payRent((Property) tiles.get(player.getCurrentTile()), player);
                     checkDoubleRoll(roll);
                     break;
                   case "Has to pay double rent":
-                    payRent((Property) tiles.get(lastPosition), players.get(currentPlayer));
-                    payRent((Property) tiles.get(lastPosition), players.get(currentPlayer));
+                    payRent((Property) tiles.get(player.getCurrentTile()), player);
+                    payRent((Property) tiles.get(player.getCurrentTile()), player);
                     checkDoubleRoll(roll);
                     break;
                   case "has to pay taxes":
-                    players.get(currentPlayer).pay(taxAmount);
-                    if (players.get(currentPlayer).getMoney() < 0) {
-                        players.get(currentPlayer).goBankrupt();
-                        for (Property property : players.get(currentPlayer).getProperties()) {
+                    player.pay(taxAmount);
+                    if (player.getMoney() < 0) {
+                        player.goBankrupt();
+                        for (Property property : player.getProperties()) {
                             property.setOwner(null);
                         }
-                        bankruptPlayers.add(players.get(currentPlayer));
+                        player.getProperties().clear();
+                        bankruptPlayers.add(player);
                         checkWinner();
                     }
                     checkDoubleRoll(roll);
@@ -150,9 +152,8 @@ public class Game {
     }
 
     private void bankruptcy(Property property, Player player, int rent) {
-        if (player.getMoney() < rent) {
+        if (player.getMoney() <= rent) {
             goBankruptByDebt(property.getOwner());
-            checkWinner();
         }
     }
 
