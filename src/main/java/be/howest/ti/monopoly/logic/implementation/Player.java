@@ -144,7 +144,18 @@ public class Player {
         street.buyHouse();
         pay(street.getHousePrice());
       } else {
-        throw new IllegalArgumentException("Property is not a street");
+          throw new IllegalArgumentException("Property is not a street");
+      }
+    }
+
+    public void sellHouse(String propertyName) {
+      Property property = findPropertyByName(propertyName);
+      if (property instanceof Street && ((Street) property).canSellHouse()) {
+        Street street = (Street) property;
+        street.sellHouse();
+        addMoney(street.getHousePrice() / 2);
+      } else {
+          throw new IllegalArgumentException("Property is not a street");
       }
     }
 }

@@ -305,7 +305,18 @@ public class MonopolyApiBridge {
     }
 
     private void sellHouse(RoutingContext ctx) {
-        throw new NotYetImplementedException("sellHouse");
+      Request request = Request.from(ctx);
+
+      String gameId = request.getGameId();
+      String playerName = request.getPathPlayerName();
+      String propertyName = request.getPropertyName();
+
+      if (!request.isAuthorized(gameId, playerName)) {
+          throw new ForbiddenAccessException("You are not authorized to do this");
+      }
+      service.sellHouse(gameId, playerName, propertyName);
+
+      Response.sendJsonResponse(ctx, 200, new JsonObject());
     }
 
     private void buyHotel(RoutingContext ctx) {

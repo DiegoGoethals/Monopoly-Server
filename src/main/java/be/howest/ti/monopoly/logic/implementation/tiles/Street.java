@@ -1,5 +1,7 @@
 package be.howest.ti.monopoly.logic.implementation.tiles;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -73,8 +75,25 @@ public class Street extends Property {
           houseCount <= 4 && hotelCount == 0;
     }
 
-    public void buyHouse() {
-        houseCount++;
+    @JsonIgnore
+    public boolean canSellHouse() {
+      List<Street> sameColor = getOwner().getProperties().stream()
+        .filter(p -> p instanceof Street)
+        .map(p -> (Street) p)
+        .filter(s -> s.getColor().equals(getColor()))
+        .collect(Collectors.toList());
+      int highestHouseCount = sameColor.stream()
+        .mapToInt(Street::getHouseCount)
+        .max()
+        .orElse(0);
+      return houseCount == highestHouseCount && houseCount > 0;
     }
 
+    public void buyHouse() {
+      houseCount++;
+    }
+
+    public void sellHouse() {
+      houseCount--;
+    }
 }

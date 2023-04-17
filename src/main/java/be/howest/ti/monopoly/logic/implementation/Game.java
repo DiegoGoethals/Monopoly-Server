@@ -410,4 +410,11 @@ public class Game {
             player.buyHouse(propertyName);
         }
     }
+
+    public void sellHouse(String playerName, String propertyName) {
+      Player player = findPlayerByName(playerName);
+      if (player == players.get(currentPlayer)) {
+        player.sellHouse(propertyName);
+      }
+    }
 }
