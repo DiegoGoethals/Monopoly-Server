@@ -146,6 +146,9 @@ public class Game {
                     checkDoubleRoll(roll);
                     break;
                   default:
+                    if (player.getMoney() <= 0) {
+                      goBankrupt(player.getName());
+                    }
                     checkDoubleRoll(roll);
                     break;
                 }
@@ -281,6 +284,10 @@ public class Game {
 
     public void goBankrupt(String playerName) {
         Player player = findPlayerByName(playerName);
+        for (Property ownedProperty : player.getProperties()) {
+            ownedProperty.setOwner(null);
+        }
+        player.getProperties().clear();
         player.goBankrupt();
         bankruptPlayers.add(player);
         checkWinner();
