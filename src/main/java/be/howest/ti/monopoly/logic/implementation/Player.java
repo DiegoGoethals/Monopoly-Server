@@ -34,8 +34,10 @@ public class Player {
 
     public void takeMortgage(String propertyName) {
         Property property = findPropertyByName(propertyName);
-        addMoney(property.getMortgage());
-        property.takeMortgage();
+        if (!property.isMortgaged()) {
+          addMoney(property.getMortgage());
+          property.takeMortgage();
+        }
     }
 
     public Property findPropertyByName(String propertyName) {
@@ -44,8 +46,10 @@ public class Player {
 
     public void settleMortgage(String propertyName) {
         Property property = findPropertyByName(propertyName);
-        pay(property.getMortgage());
-        property.settleMortgage();
+        if (property.isMortgaged()) {
+          pay(property.getMortgage());
+          property.settleMortgage();
+      }
     }
 
     public void move(int roll) {
