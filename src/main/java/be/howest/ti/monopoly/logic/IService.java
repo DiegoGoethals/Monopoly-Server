@@ -51,4 +51,6 @@ public interface IService {
     void getOutOfJailFine(String gameId, String playerName);
 
     void getOutOfJailFree(String gameId, String playerName);
+
+    void buyHouse(String gameId, String playerName, String propertyName);
 }

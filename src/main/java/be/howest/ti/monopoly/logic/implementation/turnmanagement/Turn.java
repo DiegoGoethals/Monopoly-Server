@@ -52,7 +52,7 @@ public class Turn {
           default:
               break;
         }
-        if (lastPosition >= 28 && player.getCurrentTile() < 11 && !player.isJailed()) {
+        if (lastPosition >= 28 && player.getCurrentTile() <= 11 && !player.isJailed()) {
             player.addMoney(200);
         }
         if (location.getType().equals("Street") || location.getType().equals("Utility") ||

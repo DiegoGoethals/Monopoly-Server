@@ -403,4 +403,11 @@ public class Game {
             p.setFree();
         }
     }
+
+    public void buyHouse(String playerName, String propertyName) {
+        Player player = findPlayerByName(playerName);
+        if (player == players.get(currentPlayer)) {
+            player.buyHouse(propertyName);
+        }
+    }
 }

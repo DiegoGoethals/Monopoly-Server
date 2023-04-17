@@ -83,4 +83,9 @@ public class GameManager {
         Game game = findGame(gameId);
         game.getOutOfJailFree(playerName);
     }
+
+    public void buyHouse(String gameId, String playerName, String propertyName) {
+        Game game = findGame(gameId);
+        game.buyHouse(playerName, propertyName);
+    }
 }

@@ -1,6 +1,7 @@
 package be.howest.ti.monopoly.logic.implementation;
 
 import be.howest.ti.monopoly.logic.implementation.tiles.Property;
+import be.howest.ti.monopoly.logic.implementation.tiles.Street;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,10 +39,6 @@ public class Player {
           addMoney(property.getMortgage());
           property.takeMortgage();
         }
-    }
-
-    public Property findPropertyByName(String propertyName) {
-        return properties.stream().filter(p -> p.getName().equals(propertyName)).findFirst().orElse(null);
     }
 
     public void settleMortgage(String propertyName) {
@@ -131,8 +128,23 @@ public class Player {
         jailed = false;
     }
 
+  public Property findPropertyByName(String propertyName) {
+    return properties.stream().filter(p -> p.getName().equals(propertyName)).findFirst().orElse(null);
+  }
+
     public List<Property> getAutoshopProperties() {
       return properties.stream().filter(p -> p.getType().equals("Autoshop"))
         .collect(Collectors.toList());
+    }
+
+    public void buyHouse(String propertyName) {
+      Property property = findPropertyByName(propertyName);
+      if (property instanceof Street) {
+        Street street = (Street) property;
+        street.buyHouse();
+        pay(street.getHousePrice());
+      } else {
+        throw new IllegalArgumentException("Property is not a street");
+      }
     }
 }

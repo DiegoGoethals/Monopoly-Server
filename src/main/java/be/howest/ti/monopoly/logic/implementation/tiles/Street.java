@@ -56,4 +56,8 @@ public class Street extends Property {
         return housePrice;
     }
 
+    public void buyHouse() {
+        houseCount++;
+    }
+
 }

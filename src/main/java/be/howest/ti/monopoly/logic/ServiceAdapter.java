@@ -113,4 +113,9 @@ public class ServiceAdapter implements IService {
     public void getOutOfJailFree(String gameId, String playerName) {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+  public void buyHouse(String gameId, String playerName, String propertyName) {
+        throw new UnsupportedOperationException();
+    }
 }

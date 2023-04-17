@@ -96,6 +96,9 @@ public class MonopolyApiBridge {
         routerBuilder.operation("getOutOfJailFine").handler(this::getOutOfJailFine);
         routerBuilder.operation("getOutOfJailFree").handler(this::getOutOfJailFree);
 
+        // Trading
+        routerBuilder.operation("trade").handler(this::trade);
+
         LOGGER.log(Level.INFO, "All handlers are installed");
         return routerBuilder.createRouter();
     }
@@ -287,7 +290,18 @@ public class MonopolyApiBridge {
     }
 
     private void buyHouse(RoutingContext ctx) {
-        throw new NotYetImplementedException("buyHouse");
+        Request request = Request.from(ctx);
+
+        String gameId = request.getGameId();
+        String playerName = request.getPathPlayerName();
+        String propertyName = request.getPropertyName();
+
+        if (!request.isAuthorized(gameId, playerName)) {
+            throw new ForbiddenAccessException("You are not authorized to do this");
+        }
+        service.buyHouse(gameId, playerName, propertyName);
+
+        Response.sendJsonResponse(ctx, 200, new JsonObject());
     }
 
     private void sellHouse(RoutingContext ctx) {
@@ -328,6 +342,10 @@ public class MonopolyApiBridge {
         service.getOutOfJailFree(gameId, playerName);
 
         Response.sendJsonResponse(ctx, 200, new JsonObject());
+    }
+
+    private void trade(RoutingContext ctx) {
+      throw new NotYetImplementedException("trade");
     }
 
     private void onFailedRequest(RoutingContext ctx) {
