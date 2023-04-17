@@ -134,14 +134,8 @@ public class Game {
                     break;
                   case "has to pay taxes":
                     player.pay(taxAmount);
-                    if (player.getMoney() < 0) {
-                        player.goBankrupt();
-                        for (Property property : player.getProperties()) {
-                            property.setOwner(null);
-                        }
-                        player.getProperties().clear();
-                        bankruptPlayers.add(player);
-                        checkWinner();
+                    if (player.getMoney() <= 0) {
+                        goBankrupt(player.getName());
                     }
                     checkDoubleRoll(roll);
                     break;
