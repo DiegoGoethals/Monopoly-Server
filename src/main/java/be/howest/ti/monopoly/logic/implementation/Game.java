@@ -6,8 +6,11 @@ import be.howest.ti.monopoly.logic.implementation.tiles.Tile;
 import be.howest.ti.monopoly.logic.implementation.turnmanagement.BuyStatus;
 import be.howest.ti.monopoly.logic.implementation.turnmanagement.Move;
 import be.howest.ti.monopoly.logic.implementation.turnmanagement.Turn;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonAppend;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Game {
 
@@ -164,7 +167,7 @@ public class Game {
         }
     }
 
-    public void payStreetRent(Property property, Player player) {
+    public void payStreetRent(Street property, Player player) {
       if (property.getHouseCount() == 0 && property.getHotelCount() == 0) {
         bankruptcy(property, player, property.getRent());
         payStreetRentHelper(property, player, property.getRent());
@@ -186,34 +189,43 @@ public class Game {
       }
     }
 
-    public void payAutoShopRentHelper(List<Property> ownedShops, int ownedShopsAmount, Player player, Player owner, int rent) {
-        if (ownedShops.size() == ownedShopsAmount) {
-            if (player.getMoney() > rent) {
-                owner.addMoney(rent);
-                player.pay(rent);
-            } else {
-                goBankruptByDebt(owner);
-            }
-        }
+    public void payAutoShopRentHelper(Player player, Player owner, int rent) {
+      if (player.getMoney() > rent) {
+        owner.addMoney(rent);
+        player.pay(rent);
+      } else {
+        goBankruptByDebt(owner);
+      }
     }
 
     public void payAutoShopRent(Property property, Player player) {
         Player owner = property.getOwner();
         List<Property> ownedShops = owner.getAutoshopProperties();
-        payAutoShopRentHelper(ownedShops, 4, player, owner, 200);
-        payAutoShopRentHelper(ownedShops, 3, player, owner, 100);
-        payAutoShopRentHelper(ownedShops, 2, player, owner, 50);
-        payAutoShopRentHelper(ownedShops, 1, player, owner, 25);
+        switch (ownedShops.size()) {
+          case 1: {
+            payAutoShopRentHelper(player, owner, 25);
+            break;
+          }
+          case 2: {
+            payAutoShopRentHelper(player, owner, 50);
+            break;
+          }
+          case 3: {
+            payAutoShopRentHelper(player, owner, 100);
+            break;
+          }
+          case 4: {
+            payAutoShopRentHelper(player, owner, 200);
+            break;
+          }
+          default:
+            break;
+        }
     }
 
     public void payUtilityRent(Property property, Player player) {
         Player owner = property.getOwner();
-        ArrayList<Property> owned = new ArrayList<>();
-        for (Property ownedProperty : owner.getProperties()) {
-            if (ownedProperty.getType().equals("Utility")) {
-                owned.add(ownedProperty);
-            }
-        }
+        List<Property> owned = owner.getProperties().stream().filter(p -> p.getType().equals("Utility")).collect(Collectors.toList());
         if (owned.size() == 2) {
             payBasedByRoll(property, player, 10);
         }
@@ -235,7 +247,7 @@ public class Game {
     public void payRent(Property property, Player debtor) {
         if (!property.isMortgaged()) {
             if (property.getType().equals("Street")) {
-                payStreetRent(property, debtor);
+                payStreetRent((Street) property, debtor);
             } else if (property.getType().equals("Autoshop")) {
                 payAutoShopRent(property, debtor);
             } else {
@@ -291,14 +303,29 @@ public class Game {
         }
     }
 
+    @JsonIgnore
+    private List<Property> getAllProperties() {
+        return tiles.stream().filter(tile -> tile instanceof Property)
+          .map(tile -> (Property) tile).collect(Collectors.toList());
+    }
+
+    private Property findPropertyByName(String propertyName) {
+      List<Property> properties = getAllProperties();
+      for (Property property : properties) {
+        if (property.getName().equals(propertyName)) {
+          return property;
+        }
+      }
+      return null;
+    }
+
     public BuyStatus buyProperty(String playerName, String propertyName) {
         Move lastMove = getLastTurn().getLastMove();
         if (!canRoll && lastMove.getDescription().equals("can buy this property in direct sale")) {
             Player player = players.get(currentPlayer);
-            Property propertyToBuy = null;
+            Property propertyToBuy = findPropertyByName(propertyName);
             boolean bought = false;
             if (player.getName().equals(playerName)) {
-                propertyToBuy = (Property) tiles.get(player.getCurrentTile());
                 if (player.getMoney() > propertyToBuy.getCost()) {
                     player.buyProperty(propertyToBuy);
                     bought = true;
@@ -329,8 +356,8 @@ public class Game {
         Move lastMove = getLastTurn().getLastMove();
         if (!canRoll && lastMove.getDescription().equals("can buy this property in direct sale")) {
             Player player = players.get(currentPlayer);
+            Property propertyToBuy = findPropertyByName(propertyName);
             if (player.getName().equals(playerName)) {
-                Property propertyToBuy = (Property) tiles.get(player.getCurrentTile());
                 canRoll = true;
                 checkDoubleRoll(lastDiceRoll);
                 getLastTurn().getMoves().add(new Move(propertyToBuy, "You didn't buy this property"));

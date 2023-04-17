@@ -24,42 +24,34 @@ public class Street extends Property {
         this.housePrice = housePrice;
     }
 
-    @Override
     public int getHouseCount() {
         return houseCount;
     }
 
-    @Override
     public int getHotelCount() {
         return hotelCount;
     }
 
-    @Override
     public int getRentWithOneHouse() {
         return rentWithOneHouse;
     }
 
-    @Override
     public int getRentWithTwoHouses() {
         return rentWithTwoHouses;
     }
 
-    @Override
     public int getRentWithThreeHouses() {
         return rentWithThreeHouses;
     }
 
-    @Override
     public int getRentWithFourHouses() {
         return rentWithFourHouses;
     }
 
-    @Override
     public int getRentWithHotel() {
         return rentWithHotel;
     }
 
-    @Override
     public int getHousePrice() {
         return housePrice;
     }

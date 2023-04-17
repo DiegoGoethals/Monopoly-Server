@@ -3,13 +3,13 @@ package be.howest.ti.monopoly.logic.implementation.turnmanagement;
 import be.howest.ti.monopoly.logic.implementation.Game;
 import be.howest.ti.monopoly.logic.implementation.Player;
 import be.howest.ti.monopoly.logic.implementation.tiles.Property;
+import be.howest.ti.monopoly.logic.implementation.tiles.Street;
 import be.howest.ti.monopoly.logic.implementation.tiles.Tile;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonAppend;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class Turn {
 
@@ -36,6 +36,11 @@ public class Turn {
             case 0:
                 moves.add(new Move(tiles.get(0), "Start"));
                 break;
+            case 10:
+              if (!player.isJailed()) {
+                moves.add(new Move(tiles.get(10), "Just visiting"));
+              }
+              break;
             case 20:
                 moves.add(new Move(tiles.get(20), "Nothing special happened"));
                 break;
@@ -43,11 +48,6 @@ public class Turn {
                 moves.add(new Move(tiles.get(30), "Car has been impounded"));
                 player.goToJail();
                 moves.add(new Move(tiles.get(10), "In jail"));
-                break;
-            case 10:
-                if (!player.isJailed()) {
-                    moves.add(new Move(tiles.get(10), "Just visiting"));
-                }
                 break;
           default:
               break;
@@ -81,6 +81,7 @@ public class Turn {
         String card;
         if (tileType.equals("Chance")) {
             card = chance.get(new Random().nextInt(chance.size()));
+            moves.add(new Move(tiles.get(player.getCurrentTile()), card));
             switch (card) {
                 case "Advance to Dodge Charger":
                     if (player.getCurrentTile() > 13) {
@@ -150,7 +151,8 @@ public class Turn {
                     player.goToJail();
                     break;
                 case "Make general repairs on all your cars. For each visual part, pay $25. For each performance part, pay $100.":
-                    for (Property property : player.getProperties()) {
+                  List<Street> streetProps = player.getProperties().stream().filter(p -> p instanceof Street).map(p -> (Street) p).collect(Collectors.toList());
+                  for (Street property : streetProps) {
                         player.pay(property.getHouseCount() * 25);
                         player.pay(property.getHotelCount() * 100);
                     }
@@ -178,6 +180,7 @@ public class Turn {
             }
         } else {
             card = community.get(new Random().nextInt(community.size()));
+            moves.add(new Move(tiles.get(player.getCurrentTile()), card));
             switch (card) {
                 case "Advance to Start (Collect $200)":
                     player.setCurrentTile(0);
@@ -220,14 +223,14 @@ public class Turn {
                     player.pay(25);
                     break;
                 case "You installed illegal car modifications. Pay $40 fee per visual mod and $115 per performance mod":
-                    for (Property property : player.getProperties()) {
+                    List<Street> streetProps = player.getProperties().stream().filter(p -> p instanceof Street).map(p -> (Street) p).collect(Collectors.toList());
+                    for (Street property : streetProps) {
                         player.pay(property.getHouseCount() * 40);
                         player.pay(property.getHotelCount() * 115);
                     }
                     break;
             }
         }
-        moves.add(new Move(tiles.get(player.getCurrentTile()), card));
     }
 
     public int[] getRoll() {
@@ -246,7 +249,6 @@ public class Turn {
         return moves;
     }
 
-    @JsonIgnore
     public Move getLastMove() {
       return moves.get(moves.size() - 1);
     }

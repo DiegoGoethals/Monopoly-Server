@@ -38,14 +38,6 @@ public class Property extends Tile {
         return owner != null;
     }
 
-    public int getHouseCount() {
-        return 0;
-    }
-
-    public int getHotelCount() {
-        return 0;
-    }
-
     public int getMortgage() {
         return cost/2;
     }
@@ -73,29 +65,5 @@ public class Property extends Tile {
     @JsonIgnore
     public Player getOwner() {
         return owner;
-    }
-
-    public int getRentWithOneHouse() {
-        return 0;
-    }
-
-    public int getRentWithTwoHouses() {
-        return 0;
-    }
-
-    public int getRentWithThreeHouses() {
-        return 0;
-    }
-
-    public int getRentWithFourHouses() {
-        return 0;
-    }
-
-    public int getRentWithHotel() {
-        return 0;
-    }
-
-    public int getHousePrice() {
-        return 0;
     }
 }
