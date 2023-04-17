@@ -1,5 +1,8 @@
 package be.howest.ti.monopoly.logic.implementation.tiles;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class Street extends Property {
 
     private int houseCount;
@@ -54,6 +57,20 @@ public class Street extends Property {
 
     public int getHousePrice() {
         return housePrice;
+    }
+
+    public boolean isUpgradeable() {
+        List<Street> sameColor = getOwner().getProperties().stream()
+                .filter(p -> p instanceof Street)
+                .map(p -> (Street) p)
+                .filter(s -> s.getColor().equals(getColor()))
+                .collect(Collectors.toList());
+        int lowestHouseCount = sameColor.stream()
+                .mapToInt(Street::getHouseCount)
+                .min()
+                .orElse(0);
+        return sameColor.size() == getGroupSize() && lowestHouseCount == houseCount &&
+          houseCount <= 4 && hotelCount == 0;
     }
 
     public void buyHouse() {

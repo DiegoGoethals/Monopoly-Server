@@ -139,7 +139,7 @@ public class Player {
 
     public void buyHouse(String propertyName) {
       Property property = findPropertyByName(propertyName);
-      if (property instanceof Street) {
+      if (property instanceof Street && ((Street) property).isUpgradeable()) {
         Street street = (Street) property;
         street.buyHouse();
         pay(street.getHousePrice());
