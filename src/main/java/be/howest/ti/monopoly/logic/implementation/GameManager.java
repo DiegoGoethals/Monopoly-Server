@@ -103,4 +103,9 @@ public class GameManager {
         Game game = findGame(gameId);
         game.sellHotel(playerName, propertyName);
     }
+
+    public List<Game> clearGames() {
+        games.clear();
+        return games;
+    }
 }

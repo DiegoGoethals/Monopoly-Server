@@ -67,6 +67,7 @@ public class MonopolyApiBridge {
         routerBuilder.operation("getCommunityChest").handler(this::getCommunityChest);
 
         // Managing Games
+        routerBuilder.operation("clearGameList").handler(this::clearGameList);
         routerBuilder.operation("getGames").handler(this::getGames);
         routerBuilder.operation("createGame").handler(this::createGame);
         routerBuilder.operation("joinGame").handler(this::joinGame);
@@ -142,6 +143,11 @@ public class MonopolyApiBridge {
         int numberOfPlayers = request.getBodyNumberOfPlayers();
 
         Response.sendJsonResponse(ctx, 200, service.createGame(prefix, numberOfPlayers));
+    }
+
+    private void clearGameList(RoutingContext ctx) {
+        Request request = Request.from(ctx);
+        Response.sendJsonResponse(ctx, 200, service.clearGames());
     }
 
     private void getGames(RoutingContext ctx) {
