@@ -424,4 +424,11 @@ public class Game {
         player.buyHotel(propertyName);
       }
     }
+
+    public void sellHotel(String playerName, String propertyName) {
+      Player player = findPlayerByName(playerName);
+      if (player == players.get(currentPlayer)) {
+        player.sellHotel(propertyName);
+      }
+    }
 }

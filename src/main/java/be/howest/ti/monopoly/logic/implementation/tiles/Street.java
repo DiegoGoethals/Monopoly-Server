@@ -75,7 +75,6 @@ public class Street extends Property {
           houseCount <= 4 && hotelCount == 0;
     }
 
-    @JsonIgnore
     public boolean canSellHouse() {
       List<Street> sameColor = getOwner().getProperties().stream()
         .filter(p -> p instanceof Street)
@@ -89,6 +88,19 @@ public class Street extends Property {
       return houseCount == highestHouseCount && houseCount > 0;
     }
 
+    public boolean canSellHotel() {
+      List<Street> sameColor = getOwner().getProperties().stream()
+        .filter(p -> p instanceof Street)
+        .map(p -> (Street) p)
+        .filter(s -> s.getColor().equals(getColor()))
+        .collect(Collectors.toList());
+      int highestHotelCount = sameColor.stream()
+        .mapToInt(Street::getHotelCount)
+        .max()
+        .orElse(0);
+      return hotelCount == highestHotelCount && hotelCount == 1;
+    }
+
     public void buyHouse() {
       houseCount++;
     }
@@ -99,5 +111,9 @@ public class Street extends Property {
 
     public void buyHotel() {
       hotelCount++;
+    }
+
+    public void sellHotel() {
+      hotelCount--;
     }
 }
