@@ -226,4 +226,9 @@ public class MonopolyService extends ServiceAdapter {
   public void sellHouse(String gameId, String playerName, String propertyName) {
       games.sellHouse(gameId, playerName, propertyName);
   }
+
+  @Override
+  public void buyHotel(String gameId, String playerName, String propertyName) {
+      games.buyHotel(gameId, playerName, propertyName);
+  }
 }

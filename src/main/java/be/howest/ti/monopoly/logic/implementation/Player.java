@@ -158,4 +158,15 @@ public class Player {
           throw new IllegalArgumentException("Property is not a street");
       }
     }
+
+    public void buyHotel(String propertyName) {
+      Property property = findPropertyByName(propertyName);
+      if (property instanceof Street && ((Street) property).isUpgradeable()) {
+        Street street = (Street) property;
+        street.buyHotel();
+        pay(street.getHousePrice());
+      } else {
+          throw new IllegalArgumentException("Property is not a street");
+      }
+    }
 }

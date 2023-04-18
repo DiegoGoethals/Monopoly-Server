@@ -93,4 +93,9 @@ public class GameManager {
         Game game = findGame(gameId);
         game.sellHouse(playerName, propertyName);
     }
+
+    public void buyHotel(String gameId, String playerName, String propertyName) {
+        Game game = findGame(gameId);
+        game.buyHotel(playerName, propertyName);
+    }
 }

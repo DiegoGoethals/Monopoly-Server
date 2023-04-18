@@ -96,4 +96,8 @@ public class Street extends Property {
     public void sellHouse() {
       houseCount--;
     }
+
+    public void buyHotel() {
+      hotelCount++;
+    }
 }
